@@ -149,6 +149,17 @@ class _ThermalReceiptDialogState extends State<ThermalReceiptDialog> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        Center(
+                          child: ClipOval(
+                            child: Image.asset(
+                              'assets/images/logo-btj.jpg',
+                              width: 44,
+                              height: 44,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
                         const Text(
                           'BERKAH TELUR JAYA',
                           textAlign: TextAlign.center,
@@ -362,13 +373,27 @@ class _ReceiptDashedDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
-      child: Text(
-        '--------------------------------',
-        maxLines: 1,
-        overflow: TextOverflow.clip,
-        style: TextStyle(color: BtjColors.textMuted, letterSpacing: 0.5),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          const dashWidth = 5.0;
+          const dashGap = 4.0;
+          final count = (constraints.maxWidth / (dashWidth + dashGap)).floor();
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(
+              count,
+              (_) => const SizedBox(
+                width: dashWidth,
+                height: 1.2,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: BtjColors.borderStrong),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
