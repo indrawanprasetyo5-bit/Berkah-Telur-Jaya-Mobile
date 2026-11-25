@@ -7,6 +7,7 @@ import '../models/sale_transaction.dart';
 import '../services/btj_store.dart';
 import '../services/formatters.dart';
 import '../theme/btj_theme.dart';
+import '../widgets/btj_ui.dart';
 import '../widgets/thermal_receipt_dialog.dart';
 
 class KasirScreen extends StatefulWidget {
@@ -121,7 +122,9 @@ class _KasirScreenState extends State<KasirScreen> {
     if (draft == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Masukkan berat (kg) atau nominal Rupiah terlebih dahulu.'),
+          content: Text(
+            'Masukkan berat (kg) atau nominal Rupiah terlebih dahulu.',
+          ),
         ),
       );
       return;
@@ -203,8 +206,8 @@ class _KasirScreenState extends State<KasirScreen> {
   Widget build(BuildContext context) {
     final store = context.watch<BtjStore>();
     final products = store.products;
-    final selectedProduct = store.findProductById(_selectedProductId) ??
-        products.first;
+    final selectedProduct =
+        store.findProductById(_selectedProductId) ?? products.first;
     final draftItem = _buildDraftItem(selectedProduct);
     final checkoutItems = _effectiveCheckoutItems(selectedProduct);
     final grandTotal =
@@ -222,26 +225,37 @@ class _KasirScreenState extends State<KasirScreen> {
       children: [
         Expanded(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+            padding: const EdgeInsets.fromLTRB(16, 18, 16, 28),
             child: Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 640),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _SectionTitle(
+                    BtjSectionHeader(
                       title: 'Pilih Jenis Telur',
-                      trailing: Text(
-                        '${BtjFormatters.rupiah(selectedProduct.pricePerKg)}/kg',
-                        style: const TextStyle(
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w800,
-                          color: BtjColors.primary,
-                          fontFeatures: BtjTheme.tabularFigures,
+                      trailing: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: BtjColors.primaryTint,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: BtjColors.primaryBorder),
+                        ),
+                        child: Text(
+                          '${BtjFormatters.rupiah(selectedProduct.pricePerKg)}/kg',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
+                            color: BtjColors.primaryPressed,
+                            fontFeatures: BtjTheme.tabularFigures,
+                          ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 12),
                     _EggProductGrid(
                       products: products,
                       selectedId: selectedProduct.id,
@@ -249,16 +263,12 @@ class _KasirScreenState extends State<KasirScreen> {
                         setState(() => _selectedProductId = product.id);
                       },
                     ),
-                    const SizedBox(height: 18),
-                    _SectionTitle(title: 'Mode Input & Jumlah'),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 24),
+                    const BtjSectionHeader(title: 'Mode Input & Jumlah'),
+                    const SizedBox(height: 12),
                     Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: BtjColors.surface,
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: BtjColors.border),
-                      ),
+                      padding: const EdgeInsets.all(18),
+                      decoration: BtjTheme.cardDecoration(),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -268,7 +278,7 @@ class _KasirScreenState extends State<KasirScreen> {
                               setState(() => _inputMode = nextMode);
                             },
                           ),
-                          const SizedBox(height: 14),
+                          const SizedBox(height: 16),
                           if (_inputMode == InputSaleMode.kiloan) ...[
                             TextField(
                               controller: _kgController,
@@ -283,8 +293,9 @@ class _KasirScreenState extends State<KasirScreen> {
                               ],
                               onChanged: (_) => setState(() {}),
                               style: const TextStyle(
-                                fontSize: 20,
+                                fontSize: 24,
                                 fontWeight: FontWeight.w800,
+                                color: BtjColors.textPrimary,
                                 fontFeatures: BtjTheme.tabularFigures,
                               ),
                               decoration: const InputDecoration(
@@ -292,12 +303,13 @@ class _KasirScreenState extends State<KasirScreen> {
                                 hintText: 'Contoh: 1.5',
                                 suffixText: 'kg',
                                 suffixStyle: TextStyle(
-                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
                                   color: BtjColors.textSecondary,
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 12),
                             Wrap(
                               spacing: 8,
                               runSpacing: 8,
@@ -329,8 +341,9 @@ class _KasirScreenState extends State<KasirScreen> {
                               ],
                               onChanged: (_) => setState(() {}),
                               style: const TextStyle(
-                                fontSize: 20,
+                                fontSize: 24,
                                 fontWeight: FontWeight.w800,
+                                color: BtjColors.textPrimary,
                                 fontFeatures: BtjTheme.tabularFigures,
                               ),
                               decoration: InputDecoration(
@@ -338,7 +351,8 @@ class _KasirScreenState extends State<KasirScreen> {
                                 hintText: 'Contoh: 50000',
                                 prefixText: 'Rp ',
                                 prefixStyle: const TextStyle(
-                                  fontWeight: FontWeight.w700,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
                                   color: BtjColors.textSecondary,
                                 ),
                                 helperText: draftItem != null
@@ -346,12 +360,13 @@ class _KasirScreenState extends State<KasirScreen> {
                                     : 'Masukkan nominal pembelian',
                                 helperStyle: const TextStyle(
                                   color: BtjColors.primary,
+                                  fontSize: 13,
                                   fontWeight: FontWeight.w700,
                                   fontFeatures: BtjTheme.tabularFigures,
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 12),
                             Wrap(
                               spacing: 8,
                               runSpacing: 8,
@@ -372,24 +387,35 @@ class _KasirScreenState extends State<KasirScreen> {
                               }).toList(),
                             ),
                           ],
-                          const SizedBox(height: 14),
+                          const SizedBox(height: 16),
                           const Divider(),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 12),
                           InkWell(
                             onTap: () =>
                                 setState(() => _isCracked = !_isCracked),
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(12),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 4),
                               child: Row(
                                 children: [
-                                  Icon(
-                                    Icons.egg_outlined,
-                                    color: _isCracked
-                                        ? BtjColors.warning
-                                        : BtjColors.textSecondary,
+                                  Container(
+                                    width: 38,
+                                    height: 38,
+                                    decoration: BoxDecoration(
+                                      color: _isCracked
+                                          ? BtjColors.warningBg
+                                          : BtjColors.surfaceSubtle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Icon(
+                                      Icons.egg_outlined,
+                                      size: 20,
+                                      color: _isCracked
+                                          ? BtjColors.warning
+                                          : BtjColors.textSecondary,
+                                    ),
                                   ),
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 12),
                                   const Expanded(
                                     child: Column(
                                       crossAxisAlignment:
@@ -399,12 +425,12 @@ class _KasirScreenState extends State<KasirScreen> {
                                           'Telur Retak',
                                           style: TextStyle(
                                             fontSize: 15,
-                                            fontWeight: FontWeight.w700,
+                                            fontWeight: FontWeight.w800,
                                             color: BtjColors.textPrimary,
                                           ),
                                         ),
                                         Text(
-                                          'Aktifkan diskon persen bebas',
+                                          'Aktifkan potongan diskon persen bebas',
                                           style: TextStyle(
                                             fontSize: 12.5,
                                             color: BtjColors.textSecondary,
@@ -426,12 +452,12 @@ class _KasirScreenState extends State<KasirScreen> {
                             ),
                           ),
                           if (_isCracked) ...[
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 12),
                             Container(
-                              padding: const EdgeInsets.all(12),
+                              padding: const EdgeInsets.all(14),
                               decoration: BoxDecoration(
                                 color: BtjColors.warningBg,
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(14),
                                 border: Border.all(
                                   color: BtjColors.warningBorder,
                                 ),
@@ -452,7 +478,7 @@ class _KasirScreenState extends State<KasirScreen> {
                                     ],
                                     onChanged: (_) => setState(() {}),
                                     style: const TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.w800,
                                       fontFeatures: BtjTheme.tabularFigures,
                                     ),
@@ -488,15 +514,16 @@ class _KasirScreenState extends State<KasirScreen> {
                             ),
                           ],
                           if (draftItem != null) ...[
-                            const SizedBox(height: 14),
+                            const SizedBox(height: 16),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 10,
+                                horizontal: 14,
+                                vertical: 12,
                               ),
                               decoration: BoxDecoration(
-                                color: BtjColors.surfaceSubtle,
-                                borderRadius: BorderRadius.circular(10),
+                                color: BtjColors.background,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: BtjColors.border),
                               ),
                               child: Row(
                                 children: [
@@ -508,14 +535,15 @@ class _KasirScreenState extends State<KasirScreen> {
                                         Text(
                                           '${selectedProduct.shortName}  |  ${BtjFormatters.weightKg(draftItem.weightKg)}',
                                           style: const TextStyle(
-                                            fontSize: 13,
+                                            fontSize: 13.5,
                                             fontWeight: FontWeight.w700,
-                                            color: BtjColors.textPrimary,
+                                            color: BtjColors.textSecondary,
                                             fontFeatures:
                                                 BtjTheme.tabularFigures,
                                           ),
                                         ),
-                                        if (draftItem.discountAmount > 0)
+                                        if (draftItem.discountAmount > 0) ...[
+                                          const SizedBox(height: 2),
                                           Text(
                                             'Hemat ${BtjFormatters.rupiah(draftItem.discountAmount)} (-${BtjFormatters.percent(draftItem.discountPercent)})',
                                             style: const TextStyle(
@@ -526,13 +554,14 @@ class _KasirScreenState extends State<KasirScreen> {
                                                   BtjTheme.tabularFigures,
                                             ),
                                           ),
+                                        ],
                                       ],
                                     ),
                                   ),
                                   Text(
                                     BtjFormatters.rupiah(draftItem.netAmount),
                                     style: const TextStyle(
-                                      fontSize: 17,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.w800,
                                       color: BtjColors.textPrimary,
                                       fontFeatures: BtjTheme.tabularFigures,
@@ -542,7 +571,7 @@ class _KasirScreenState extends State<KasirScreen> {
                               ),
                             ),
                           ],
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 14),
                           OutlinedButton.icon(
                             onPressed: draftItem == null
                                 ? null
@@ -558,21 +587,17 @@ class _KasirScreenState extends State<KasirScreen> {
                       ),
                     ),
                     if (_cart.isNotEmpty) ...[
-                      const SizedBox(height: 18),
-                      _SectionTitle(
+                      const SizedBox(height: 24),
+                      BtjSectionHeader(
                         title: 'Daftar Belanja (${_cart.length} item)',
                         trailing: TextButton(
                           onPressed: () => setState(_cart.clear),
                           child: const Text('Kosongkan'),
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 10),
                       Container(
-                        decoration: BoxDecoration(
-                          color: BtjColors.surface,
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: BtjColors.border),
-                        ),
+                        decoration: BtjTheme.cardDecoration(),
                         child: Column(
                           children: [
                             for (var i = 0; i < _cart.length; i++) ...[
@@ -586,16 +611,12 @@ class _KasirScreenState extends State<KasirScreen> {
                         ),
                       ),
                     ],
-                    const SizedBox(height: 18),
-                    _SectionTitle(title: 'Metode Pembayaran'),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 24),
+                    const BtjSectionHeader(title: 'Metode Pembayaran'),
+                    const SizedBox(height: 12),
                     Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: BtjColors.surface,
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: BtjColors.border),
-                      ),
+                      padding: const EdgeInsets.all(18),
+                      decoration: BtjTheme.cardDecoration(),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -614,7 +635,7 @@ class _KasirScreenState extends State<KasirScreen> {
                                   },
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: 10),
                               Expanded(
                                 child: _PaymentMethodButton(
                                   label: 'QRIS',
@@ -628,7 +649,7 @@ class _KasirScreenState extends State<KasirScreen> {
                                   },
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: 10),
                               Expanded(
                                 child: _PaymentMethodButton(
                                   label: 'Transfer',
@@ -644,7 +665,7 @@ class _KasirScreenState extends State<KasirScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 14),
+                          const SizedBox(height: 16),
                           if (_paymentMethod == PaymentMethod.tunai) ...[
                             TextField(
                               controller: _cashPaidController,
@@ -654,8 +675,9 @@ class _KasirScreenState extends State<KasirScreen> {
                               ],
                               onChanged: (_) => setState(() {}),
                               style: const TextStyle(
-                                fontSize: 20,
+                                fontSize: 24,
                                 fontWeight: FontWeight.w800,
+                                color: BtjColors.textPrimary,
                                 fontFeatures: BtjTheme.tabularFigures,
                               ),
                               decoration: InputDecoration(
@@ -665,6 +687,11 @@ class _KasirScreenState extends State<KasirScreen> {
                                   withPrefix: false,
                                 ),
                                 prefixText: 'Rp ',
+                                prefixStyle: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  color: BtjColors.textSecondary,
+                                ),
                                 suffixIcon: _cashPaidController.text.isNotEmpty
                                     ? IconButton(
                                         onPressed: () {
@@ -676,7 +703,7 @@ class _KasirScreenState extends State<KasirScreen> {
                                     : null,
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 12),
                             Wrap(
                               spacing: 8,
                               runSpacing: 8,
@@ -708,21 +735,22 @@ class _KasirScreenState extends State<KasirScreen> {
                                 }),
                               ],
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 14),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 12,
+                                horizontal: 16,
+                                vertical: 14,
                               ),
                               decoration: BoxDecoration(
                                 color: isCashShort
                                     ? BtjColors.dangerBg
                                     : BtjColors.successBg,
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(14),
                                 border: Border.all(
                                   color: isCashShort
                                       ? BtjColors.dangerBorder
                                       : BtjColors.successBorder,
+                                  width: 1.3,
                                 ),
                               ),
                               child: Row(
@@ -738,12 +766,10 @@ class _KasirScreenState extends State<KasirScreen> {
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: Text(
-                                      isCashShort
-                                          ? 'Uang Kurang'
-                                          : 'Kembalian',
+                                      isCashShort ? 'Uang Kurang' : 'Kembalian',
                                       style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14.5,
+                                        fontWeight: FontWeight.w800,
                                         color: isCashShort
                                             ? BtjColors.danger
                                             : BtjColors.success,
@@ -753,7 +779,7 @@ class _KasirScreenState extends State<KasirScreen> {
                                   Text(
                                     BtjFormatters.rupiah(cashDelta.abs()),
                                     style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 21,
                                       fontWeight: FontWeight.w800,
                                       color: isCashShort
                                           ? BtjColors.danger
@@ -766,10 +792,10 @@ class _KasirScreenState extends State<KasirScreen> {
                             ),
                           ] else ...[
                             Container(
-                              padding: const EdgeInsets.all(12),
+                              padding: const EdgeInsets.all(14),
                               decoration: BoxDecoration(
                                 color: BtjColors.infoBg,
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(14),
                                 border: Border.all(color: BtjColors.infoBorder),
                               ),
                               child: Row(
@@ -783,10 +809,11 @@ class _KasirScreenState extends State<KasirScreen> {
                                     child: Text(
                                       'Pastikan pembayaran ${_paymentMethod.label} masuk tepat ${BtjFormatters.rupiah(grandTotal)} sebelum cetak struk.',
                                       style: const TextStyle(
-                                        fontSize: 13,
+                                        fontSize: 13.5,
                                         height: 1.4,
                                         fontWeight: FontWeight.w600,
                                         color: BtjColors.info,
+                                        fontFeatures: BtjTheme.tabularFigures,
                                       ),
                                     ),
                                   ),
@@ -794,13 +821,14 @@ class _KasirScreenState extends State<KasirScreen> {
                               ),
                             ),
                           ],
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 14),
                           TextField(
                             controller: _noteController,
                             textInputAction: TextInputAction.done,
                             decoration: const InputDecoration(
                               labelText: 'Catatan (Opsional)',
-                              hintText: 'Nama pelanggan / warung / no referensi',
+                              hintText:
+                                  'Nama pelanggan / warung / no referensi',
                             ),
                           ),
                         ],
@@ -815,9 +843,12 @@ class _KasirScreenState extends State<KasirScreen> {
         Container(
           decoration: const BoxDecoration(
             color: BtjColors.surface,
-            border: Border(top: BorderSide(color: BtjColors.border, width: 1.2)),
+            border: Border(
+              top: BorderSide(color: BtjColors.border, width: 1),
+            ),
+            boxShadow: BtjTheme.topBarShadow,
           ),
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+          padding: const EdgeInsets.fromLTRB(16, 13, 16, 15),
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 640),
@@ -830,20 +861,24 @@ class _KasirScreenState extends State<KasirScreen> {
                       children: [
                         Text(
                           totalDiscount > 0
-                              ? 'Total (Diskon ${BtjFormatters.rupiah(totalDiscount)})'
+                              ? 'Total (Hemat ${BtjFormatters.rupiah(totalDiscount)})'
                               : 'Total Bayar',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: BtjColors.textSecondary,
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w700,
+                            color: totalDiscount > 0
+                                ? BtjColors.warning
+                                : BtjColors.textSecondary,
+                            fontFeatures: BtjTheme.tabularFigures,
                           ),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           BtjFormatters.rupiah(grandTotal),
                           style: const TextStyle(
-                            fontSize: 22,
+                            fontSize: 25,
                             fontWeight: FontWeight.w800,
+                            letterSpacing: -0.4,
                             color: BtjColors.textPrimary,
                             fontFeatures: BtjTheme.tabularFigures,
                           ),
@@ -857,7 +892,7 @@ class _KasirScreenState extends State<KasirScreen> {
                         ? null
                         : () => _completeSale(store, selectedProduct),
                     style: FilledButton.styleFrom(
-                      minimumSize: const Size(176, 54),
+                      minimumSize: const Size(178, 56),
                     ),
                     icon: const Icon(Icons.receipt_long_rounded),
                     label: const Text('Bayar & Struk'),
@@ -867,35 +902,6 @@ class _KasirScreenState extends State<KasirScreen> {
             ),
           ),
         ),
-      ],
-    );
-  }
-}
-
-class _SectionTitle extends StatelessWidget {
-  const _SectionTitle({
-    required this.title,
-    this.trailing,
-  });
-
-  final String title;
-  final Widget? trailing;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 15.5,
-              fontWeight: FontWeight.w800,
-              color: BtjColors.textPrimary,
-            ),
-          ),
-        ),
-        ?trailing,
       ],
     );
   }
@@ -917,7 +923,7 @@ class _EggProductGrid extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final crossAxisCount = constraints.maxWidth >= 520 ? 3 : 2;
-        const spacing = 10.0;
+        const spacing = 12.0;
         final itemWidth =
             (constraints.maxWidth - (spacing * (crossAxisCount - 1))) /
                 crossAxisCount;
@@ -935,60 +941,93 @@ class _EggProductGrid extends StatelessWidget {
 
             return SizedBox(
               width: itemWidth,
-              child: Material(
-                color: isSelected ? BtjColors.primarySoft : BtjColors.surface,
-                borderRadius: BorderRadius.circular(14),
-                child: InkWell(
-                  onTap: () => onSelected(product),
-                  borderRadius: BorderRadius.circular(14),
-                  child: Container(
-                    constraints: const BoxConstraints(minHeight: 84),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: isSelected
-                            ? BtjColors.primary
-                            : BtjColors.border,
-                        width: isSelected ? 2 : 1.1,
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Container(
+                decoration: BtjTheme.cardDecoration(
+                  color: isSelected ? BtjColors.primaryTint : BtjColors.surface,
+                  borderColor:
+                      isSelected ? BtjColors.primary : BtjColors.border,
+                  borderWidth: isSelected ? 2.0 : 1.0,
+                  radius: 16,
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(16),
+                  child: InkWell(
+                    onTap: () => onSelected(product),
+                    borderRadius: BorderRadius.circular(16),
+                    child: Stack(
                       children: [
-                        Text(
-                          product.shortName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 14.5,
-                            fontWeight: FontWeight.w800,
-                            color: isSelected
-                                ? BtjColors.primaryPressed
-                                : BtjColors.textPrimary,
+                        Container(
+                          width: double.infinity,
+                          constraints: const BoxConstraints(minHeight: 98),
+                          padding: const EdgeInsets.fromLTRB(14, 13, 14, 13),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  right: isSelected ? 24 : 0,
+                                ),
+                                child: Text(
+                                  product.shortName,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w800,
+                                    color: isSelected
+                                        ? BtjColors.primaryPressed
+                                        : BtjColors.textPrimary,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                '${BtjFormatters.rupiah(product.pricePerKg)}/kg',
+                                style: const TextStyle(
+                                  fontSize: 15.5,
+                                  fontWeight: FontWeight.w800,
+                                  color: BtjColors.textPrimary,
+                                  fontFeatures: BtjTheme.tabularFigures,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 7,
+                                    height: 7,
+                                    decoration: BoxDecoration(
+                                      color: stockColor,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Expanded(
+                                    child: Text(
+                                      'Stok ${BtjFormatters.weightKg(product.stockKg)}',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color: stockColor,
+                                        fontFeatures: BtjTheme.tabularFigures,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 6),
-                        Text(
-                          '${BtjFormatters.rupiah(product.pricePerKg)}/kg',
-                          style: const TextStyle(
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w700,
-                            color: BtjColors.textPrimary,
-                            fontFeatures: BtjTheme.tabularFigures,
+                        if (isSelected)
+                          const Positioned(
+                            top: 10,
+                            right: 10,
+                            child: BtjCheckBadge(size: 20),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Stok ${BtjFormatters.weightKg(product.stockKg)}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: stockColor,
-                            fontFeatures: BtjTheme.tabularFigures,
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -1017,7 +1056,7 @@ class _ModeSwitcher extends StatelessWidget {
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: BtjColors.surfaceSubtle,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(color: BtjColors.border),
       ),
       child: Row(
@@ -1034,7 +1073,7 @@ class _ModeSwitcher extends StatelessWidget {
           Expanded(
             child: _ModeTab(
               label: 'Beli Rupiah (Rp)',
-              icon: Icons.attach_money_rounded,
+              icon: Icons.payments_outlined,
               selected: mode == InputSaleMode.rupiah,
               onTap: () => onChanged(InputSaleMode.rupiah),
             ),
@@ -1060,37 +1099,45 @@ class _ModeTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: selected ? BtjColors.primary : Colors.transparent,
-      borderRadius: BorderRadius.circular(9),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(9),
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 48),
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 18,
-                color: selected ? Colors.white : BtjColors.textSecondary,
-              ),
-              const SizedBox(width: 6),
-              Flexible(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w700,
-                    color: selected ? Colors.white : BtjColors.textPrimary,
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 160),
+      curve: Curves.easeOutCubic,
+      decoration: BoxDecoration(
+        color: selected ? BtjColors.primary : Colors.transparent,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(10),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 48),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 18,
+                  color: selected ? Colors.white : BtjColors.textSecondary,
+                ),
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w700,
+                      color: selected ? Colors.white : BtjColors.textPrimary,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -1115,15 +1162,15 @@ class _PresetChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: selected ? accentColor : BtjColors.background,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(11),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(11),
         child: Container(
           constraints: const BoxConstraints(minHeight: 44),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(11),
             border: Border.all(
               color: selected ? accentColor : BtjColors.borderStrong,
               width: 1.2,
@@ -1160,42 +1207,54 @@ class _PaymentMethodButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: selected ? BtjColors.primarySoft : BtjColors.background,
-      borderRadius: BorderRadius.circular(12),
+      color: selected ? BtjColors.primaryTint : BtjColors.background,
+      borderRadius: BorderRadius.circular(14),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 56),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: selected ? BtjColors.primary : BtjColors.borderStrong,
-              width: selected ? 2 : 1.1,
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 20,
-                color: selected ? BtjColors.primary : BtjColors.textSecondary,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w800,
-                  color: selected
-                      ? BtjColors.primaryPressed
-                      : BtjColors.textPrimary,
+        borderRadius: BorderRadius.circular(14),
+        child: Stack(
+          children: [
+            Container(
+              width: double.infinity,
+              constraints: const BoxConstraints(minHeight: 68),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: selected ? BtjColors.primary : BtjColors.borderStrong,
+                  width: selected ? 2 : 1.1,
                 ),
               ),
-            ],
-          ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    icon,
+                    size: 22,
+                    color:
+                        selected ? BtjColors.primary : BtjColors.textSecondary,
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w800,
+                      color: selected
+                          ? BtjColors.primaryPressed
+                          : BtjColors.textPrimary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (selected)
+              const Positioned(
+                top: 7,
+                right: 7,
+                child: BtjCheckBadge(size: 18),
+              ),
+          ],
         ),
       ),
     );
@@ -1214,7 +1273,7 @@ class _CartItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(14, 10, 6, 10),
+      padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
       child: Row(
         children: [
           Expanded(
@@ -1226,16 +1285,16 @@ class _CartItemRow extends StatelessWidget {
                       ? '${item.productName} (Retak -${BtjFormatters.percent(item.discountPercent)})'
                       : item.productName,
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 14.5,
                     fontWeight: FontWeight.w700,
                     color: BtjColors.textPrimary,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 3),
                 Text(
                   '${BtjFormatters.weightKg(item.weightKg)} x ${BtjFormatters.rupiah(item.unitPricePerKg)}',
                   style: const TextStyle(
-                    fontSize: 12.5,
+                    fontSize: 13,
                     color: BtjColors.textSecondary,
                     fontFeatures: BtjTheme.tabularFigures,
                   ),
@@ -1247,7 +1306,7 @@ class _CartItemRow extends StatelessWidget {
           Text(
             BtjFormatters.rupiah(item.netAmount),
             style: const TextStyle(
-              fontSize: 14.5,
+              fontSize: 15.5,
               fontWeight: FontWeight.w800,
               color: BtjColors.textPrimary,
               fontFeatures: BtjTheme.tabularFigures,

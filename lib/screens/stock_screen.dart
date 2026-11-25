@@ -8,6 +8,7 @@ import '../models/stock_log.dart';
 import '../services/btj_store.dart';
 import '../services/formatters.dart';
 import '../theme/btj_theme.dart';
+import '../widgets/btj_ui.dart';
 
 class StockScreen extends StatelessWidget {
   const StockScreen({super.key});
@@ -52,7 +53,7 @@ class StockScreen extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: BtjColors.background,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (_) => _ReceiveDeliverySheet(initialProduct: initialProduct),
     );
@@ -64,7 +65,7 @@ class StockScreen extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: BtjColors.background,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (_) => _RecordBrokenEggSheet(initialProduct: initialProduct),
     );
@@ -77,7 +78,7 @@ class StockScreen extends StatelessWidget {
     final logs = store.stockLogs;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+      padding: const EdgeInsets.fromLTRB(16, 18, 16, 36),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 640),
@@ -96,7 +97,7 @@ class StockScreen extends StatelessWidget {
                       label: const Text('Terima Kiriman'),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () => _openBrokenEggSheet(context),
@@ -105,7 +106,7 @@ class StockScreen extends StatelessWidget {
                         foregroundColor: BtjColors.warning,
                         side: const BorderSide(
                           color: BtjColors.warningBorder,
-                          width: 1.6,
+                          width: 1.5,
                         ),
                         backgroundColor: BtjColors.warningBg,
                       ),
@@ -115,72 +116,58 @@ class StockScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 18),
-              Row(
-                children: [
-                  const Expanded(
-                    child: Text(
-                      'Stok Telur Saat Ini',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        color: BtjColors.textPrimary,
-                      ),
-                    ),
+              const SizedBox(height: 24),
+              const BtjSectionHeader(
+                title: 'Stok Telur Saat Ini',
+                trailing: Text(
+                  'Prioritas Kritis -> Aman',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: BtjColors.textSecondary,
                   ),
-                  Text(
-                    'Urut: Kritis -> Aman',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: BtjColors.textSecondary,
-                    ),
-                  ),
-                ],
+                ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               for (final product in products) ...[
                 _StockCard(
                   product: product,
                   onRequestWa: () =>
                       _requestRestockViaWhatsApp(context, product),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 12),
               ],
-              const SizedBox(height: 14),
-              Row(
-                children: [
-                  const Expanded(
-                    child: Text(
-                      'Riwayat Kiriman & Pecah Terbaru',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        color: BtjColors.textPrimary,
-                      ),
-                    ),
-                  ),
-                  if (store.todayTotalBreakageLoss > 0)
-                    Text(
-                      'Rugi ${BtjFormatters.rupiah(store.todayTotalBreakageLoss)}',
-                      style: const TextStyle(
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.w700,
-                        color: BtjColors.danger,
-                        fontFeatures: BtjTheme.tabularFigures,
-                      ),
-                    ),
-                ],
+              const SizedBox(height: 16),
+              BtjSectionHeader(
+                title: 'Riwayat Kiriman & Pecah Terbaru',
+                trailing: store.todayTotalBreakageLoss > 0
+                    ? Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 9,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: BtjColors.dangerBg,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: BtjColors.dangerBorder),
+                        ),
+                        child: Text(
+                          'Rugi ${BtjFormatters.rupiah(store.todayTotalBreakageLoss)}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w800,
+                            color: BtjColors.danger,
+                            fontFeatures: BtjTheme.tabularFigures,
+                          ),
+                        ),
+                      )
+                    : null,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               if (logs.isEmpty)
                 Container(
-                  padding: const EdgeInsets.all(18),
-                  decoration: BoxDecoration(
-                    color: BtjColors.surface,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: BtjColors.border),
-                  ),
+                  padding: const EdgeInsets.all(20),
+                  decoration: BtjTheme.cardDecoration(),
                   child: const Text(
                     'Belum ada catatan kiriman mobil atau telur pecah hari ini.',
                     style: TextStyle(
@@ -192,7 +179,7 @@ class StockScreen extends StatelessWidget {
               else
                 for (final log in logs.take(10)) ...[
                   _StockLogTile(log: log),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 10),
                 ],
             ],
           ),
@@ -232,18 +219,16 @@ class _StockCard extends StatelessWidget {
     };
 
     final isUrgent = product.stockLevel != StockLevel.aman;
+    final capacityRef = (product.minStockKg * 2.5).clamp(15.0, 9999.0);
+    final fillRatio = (product.stockKg / capacityRef).clamp(0.05, 1.0);
 
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: BtjColors.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: product.stockLevel == StockLevel.kritis
-              ? BtjColors.dangerBorder
-              : BtjColors.border,
-          width: product.stockLevel == StockLevel.kritis ? 1.5 : 1.1,
-        ),
+      padding: const EdgeInsets.all(18),
+      decoration: BtjTheme.cardDecoration(
+        borderColor: product.stockLevel == StockLevel.kritis
+            ? BtjColors.dangerBorder
+            : BtjColors.border,
+        borderWidth: product.stockLevel == StockLevel.kritis ? 1.5 : 1.0,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -261,7 +246,7 @@ class _StockCard extends StatelessWidget {
                           child: Text(
                             product.name,
                             style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 16.5,
                               fontWeight: FontWeight.w800,
                               color: BtjColors.textPrimary,
                             ),
@@ -293,45 +278,66 @@ class _StockCard extends StatelessWidget {
                     Text(
                       'Modal ${BtjFormatters.rupiah(product.costPricePerKg)}  |  Jual ${BtjFormatters.rupiah(product.pricePerKg)}/kg',
                       style: const TextStyle(
-                        fontSize: 12.5,
+                        fontSize: 13,
                         color: BtjColors.textSecondary,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                         fontFeatures: BtjTheme.tabularFigures,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
                     BtjFormatters.weightKg(product.stockKg),
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 23,
                       fontWeight: FontWeight.w800,
+                      letterSpacing: -0.3,
                       color: product.stockLevel == StockLevel.kritis
                           ? BtjColors.danger
                           : BtjColors.textPrimary,
                       fontFeatures: BtjTheme.tabularFigures,
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    '~${BtjFormatters.crates(product.estimatedCrates)}',
-                    style: const TextStyle(
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w700,
-                      color: BtjColors.textSecondary,
-                      fontFeatures: BtjTheme.tabularFigures,
+                  const SizedBox(height: 3),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: BtjColors.surfaceSubtle,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      '~${BtjFormatters.crates(product.estimatedCrates)}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: BtjColors.textSecondary,
+                        fontFeatures: BtjTheme.tabularFigures,
+                      ),
                     ),
                   ),
                 ],
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: fillRatio,
+              minHeight: 5,
+              backgroundColor: BtjColors.surfaceSubtle,
+              valueColor: AlwaysStoppedAnimation<Color>(badgeFg),
+            ),
+          ),
+          const SizedBox(height: 14),
           SizedBox(
             height: 48,
             child: OutlinedButton.icon(
@@ -342,9 +348,7 @@ class _StockCard extends StatelessWidget {
                     isUrgent ? BtjColors.successBg : BtjColors.background,
                 foregroundColor: BtjColors.success,
                 side: BorderSide(
-                  color: isUrgent
-                      ? BtjColors.success
-                      : BtjColors.successBorder,
+                  color: isUrgent ? BtjColors.success : BtjColors.successBorder,
                   width: isUrgent ? 1.5 : 1.2,
                 ),
               ),
@@ -384,27 +388,23 @@ class _StockLogTile extends StatelessWidget {
         : '-${BtjFormatters.weightKg(log.netKgDelta.abs())}';
 
     return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: BtjColors.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: BtjColors.border),
-      ),
+      padding: const EdgeInsets.all(15),
+      decoration: BtjTheme.cardDecoration(),
       child: Row(
         children: [
           Container(
-            width: 40,
-            height: 40,
+            width: 42,
+            height: 42,
             decoration: BoxDecoration(
               color: bg,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(11),
             ),
             child: Icon(
               isDelivery
                   ? Icons.local_shipping_outlined
                   : Icons.warning_amber_rounded,
               color: accent,
-              size: 20,
+              size: 21,
             ),
           ),
           const SizedBox(width: 12),
@@ -415,16 +415,16 @@ class _StockLogTile extends StatelessWidget {
                 Text(
                   log.productName,
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 14.5,
                     fontWeight: FontWeight.w700,
                     color: BtjColors.textPrimary,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 3),
                 Text(
                   subtitleParts.join('  |  '),
                   style: const TextStyle(
-                    fontSize: 12,
+                    fontSize: 12.5,
                     color: BtjColors.textSecondary,
                   ),
                 ),
@@ -438,22 +438,24 @@ class _StockLogTile extends StatelessWidget {
               Text(
                 deltaLabel,
                 style: TextStyle(
-                  fontSize: 14.5,
+                  fontSize: 15.5,
                   fontWeight: FontWeight.w800,
                   color: accent,
                   fontFeatures: BtjTheme.tabularFigures,
                 ),
               ),
-              if (log.lossAmount > 0)
+              if (log.lossAmount > 0) ...[
+                const SizedBox(height: 2),
                 Text(
                   '-${BtjFormatters.rupiah(log.lossAmount)}',
                   style: const TextStyle(
-                    fontSize: 11.5,
+                    fontSize: 12,
                     fontWeight: FontWeight.w700,
                     color: BtjColors.danger,
                     fontFeatures: BtjTheme.tabularFigures,
                   ),
                 ),
+              ],
             ],
           ),
         ],
@@ -544,28 +546,41 @@ class _ReceiveDeliverySheetState extends State<_ReceiveDeliverySheet> {
     final brokenKg = _parseDouble(_brokenController.text).clamp(0.0, grossKg);
     final netKg = (grossKg - brokenKg).clamp(0.0, 99999.0);
     final costPrice = _parseInt(_costController.text);
-    final lossAmount = (brokenKg * (costPrice > 0 ? costPrice : product.costPricePerKg)).round();
+    final lossAmount =
+        (brokenKg * (costPrice > 0 ? costPrice : product.costPricePerKg))
+            .round();
 
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.fromLTRB(
           18,
-          16,
+          12,
           18,
-          MediaQuery.of(context).viewInsets.bottom + 18,
+          MediaQuery.of(context).viewInsets.bottom + 20,
         ),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: BtjColors.borderStrong,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
               Row(
                 children: [
                   const Expanded(
                     child: Text(
                       'Terima Kiriman Mobil',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 18.5,
                         fontWeight: FontWeight.w800,
                         color: BtjColors.textPrimary,
                       ),
@@ -612,6 +627,11 @@ class _ReceiveDeliverySheetState extends State<_ReceiveDeliverySheet> {
                         FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
                       ],
                       onChanged: (_) => setState(() {}),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        fontFeatures: BtjTheme.tabularFigures,
+                      ),
                       decoration: InputDecoration(
                         labelText: 'Jumlah Peti',
                         suffixText: 'peti',
@@ -630,6 +650,11 @@ class _ReceiveDeliverySheetState extends State<_ReceiveDeliverySheet> {
                         FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
                       ],
                       onChanged: (_) => setState(() {}),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        fontFeatures: BtjTheme.tabularFigures,
+                      ),
                       decoration: const InputDecoration(
                         labelText: 'Pecah di Jalan',
                         suffixText: 'kg',
@@ -647,6 +672,11 @@ class _ReceiveDeliverySheetState extends State<_ReceiveDeliverySheet> {
                   FilteringTextInputFormatter.digitsOnly,
                 ],
                 onChanged: (_) => setState(() {}),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  fontFeatures: BtjTheme.tabularFigures,
+                ),
                 decoration: const InputDecoration(
                   labelText: 'Harga Modal / kg Hari Ini',
                   prefixText: 'Rp ',
@@ -663,10 +693,10 @@ class _ReceiveDeliverySheetState extends State<_ReceiveDeliverySheet> {
               ),
               const SizedBox(height: 14),
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: BtjColors.surfaceSubtle,
-                  borderRadius: BorderRadius.circular(12),
+                  color: BtjColors.surface,
+                  borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: BtjColors.border),
                 ),
                 child: Column(
@@ -684,29 +714,29 @@ class _ReceiveDeliverySheetState extends State<_ReceiveDeliverySheet> {
                         Text(
                           BtjFormatters.weightKg(grossKg),
                           style: const TextStyle(
-                            fontSize: 13.5,
+                            fontSize: 14,
                             fontWeight: FontWeight.w700,
                             fontFeatures: BtjTheme.tabularFigures,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 6),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
                           'Stok Masuk Bersih',
                           style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
+                            fontSize: 14.5,
+                            fontWeight: FontWeight.w800,
                             color: BtjColors.textPrimary,
                           ),
                         ),
                         Text(
                           '+${BtjFormatters.weightKg(netKg)}',
                           style: const TextStyle(
-                            fontSize: 16,
+                            fontSize: 18,
                             fontWeight: FontWeight.w800,
                             color: BtjColors.success,
                             fontFeatures: BtjTheme.tabularFigures,
@@ -715,7 +745,7 @@ class _ReceiveDeliverySheetState extends State<_ReceiveDeliverySheet> {
                       ],
                     ),
                     if (lossAmount > 0) ...[
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 6),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -729,8 +759,8 @@ class _ReceiveDeliverySheetState extends State<_ReceiveDeliverySheet> {
                           Text(
                             '-${BtjFormatters.rupiah(lossAmount)}',
                             style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
+                              fontSize: 13.5,
+                              fontWeight: FontWeight.w800,
                               color: BtjColors.danger,
                               fontFeatures: BtjTheme.tabularFigures,
                             ),
@@ -827,22 +857,33 @@ class _RecordBrokenEggSheetState extends State<_RecordBrokenEggSheet> {
       child: Padding(
         padding: EdgeInsets.fromLTRB(
           18,
-          16,
+          12,
           18,
-          MediaQuery.of(context).viewInsets.bottom + 18,
+          MediaQuery.of(context).viewInsets.bottom + 20,
         ),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: BtjColors.borderStrong,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
               Row(
                 children: [
                   const Expanded(
                     child: Text(
                       'Catat Telur Pecah / Busuk',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 18.5,
                         fontWeight: FontWeight.w800,
                         color: BtjColors.textPrimary,
                       ),
@@ -883,12 +924,17 @@ class _RecordBrokenEggSheetState extends State<_RecordBrokenEggSheet> {
                   FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
                 ],
                 onChanged: (_) => setState(() {}),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  fontFeatures: BtjTheme.tabularFigures,
+                ),
                 decoration: const InputDecoration(
                   labelText: 'Jumlah (kg)',
                   suffixText: 'kg',
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 14),
               const Text(
                 'Alasan',
                 style: TextStyle(
@@ -898,38 +944,63 @@ class _RecordBrokenEggSheetState extends State<_RecordBrokenEggSheet> {
                 ),
               ),
               const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
+              Row(
                 children: BrokenEggReason.values.map((reason) {
                   final selected = _reason == reason;
-                  return Material(
-                    color: selected ? BtjColors.warning : BtjColors.surface,
-                    borderRadius: BorderRadius.circular(10),
-                    child: InkWell(
-                      onTap: () => setState(() => _reason = reason),
-                      borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        constraints: const BoxConstraints(minHeight: 44),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: selected
-                                ? BtjColors.warning
-                                : BtjColors.borderStrong,
-                          ),
-                        ),
-                        child: Text(
-                          reason.label,
-                          style: TextStyle(
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w700,
-                            color:
-                                selected ? Colors.white : BtjColors.textPrimary,
+                  return Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        right: reason == BrokenEggReason.values.last ? 0 : 8,
+                      ),
+                      child: Material(
+                        color:
+                            selected ? BtjColors.warningBg : BtjColors.surface,
+                        borderRadius: BorderRadius.circular(12),
+                        child: InkWell(
+                          onTap: () => setState(() => _reason = reason),
+                          borderRadius: BorderRadius.circular(12),
+                          child: Stack(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                constraints:
+                                    const BoxConstraints(minHeight: 48),
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 12,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: selected
+                                        ? BtjColors.warning
+                                        : BtjColors.borderStrong,
+                                    width: selected ? 2 : 1.1,
+                                  ),
+                                ),
+                                child: Text(
+                                  reason.label,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w800,
+                                    color: selected
+                                        ? BtjColors.warning
+                                        : BtjColors.textPrimary,
+                                  ),
+                                ),
+                              ),
+                              if (selected)
+                                const Positioned(
+                                  top: 5,
+                                  right: 5,
+                                  child: BtjCheckBadge(
+                                    size: 16,
+                                    color: BtjColors.warning,
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                       ),
@@ -947,10 +1018,10 @@ class _RecordBrokenEggSheetState extends State<_RecordBrokenEggSheet> {
               ),
               const SizedBox(height: 14),
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: BtjColors.dangerBg,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: BtjColors.dangerBorder),
                 ),
                 child: Row(
@@ -967,7 +1038,7 @@ class _RecordBrokenEggSheetState extends State<_RecordBrokenEggSheet> {
                     Text(
                       BtjFormatters.rupiah(estLoss),
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.w800,
                         color: BtjColors.danger,
                         fontFeatures: BtjTheme.tabularFigures,

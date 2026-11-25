@@ -38,31 +38,39 @@ class _MainShellState extends State<MainShell> {
 
     return Scaffold(
       appBar: AppBar(
-        titleSpacing: 14,
+        titleSpacing: 16,
         title: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
-                'assets/images/logo-btj.jpg',
-                width: 34,
-                height: 34,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    width: 34,
-                    height: 34,
-                    color: BtjColors.primarySoft,
-                    child: const Icon(
-                      Icons.storefront_rounded,
-                      size: 20,
-                      color: BtjColors.primary,
-                    ),
-                  );
-                },
+            Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: BtjColors.background,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: BtjColors.borderStrong),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.asset(
+                  'assets/images/logo-btj.jpg',
+                  width: 34,
+                  height: 34,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      width: 34,
+                      height: 34,
+                      color: BtjColors.primarySoft,
+                      child: const Icon(
+                        Icons.storefront_rounded,
+                        size: 20,
+                        color: BtjColors.primary,
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,15 +79,16 @@ class _MainShellState extends State<MainShell> {
                   Text(
                     _titles[_selectedIndex],
                     style: const TextStyle(
-                      fontSize: 17,
+                      fontSize: 17.5,
                       fontWeight: FontWeight.w800,
+                      letterSpacing: -0.3,
                       color: BtjColors.textPrimary,
                     ),
                   ),
                   const Text(
                     'Berkah Telur Jaya',
                     style: TextStyle(
-                      fontSize: 11.5,
+                      fontSize: 12,
                       fontWeight: FontWeight.w600,
                       color: BtjColors.textSecondary,
                     ),
@@ -92,23 +101,39 @@ class _MainShellState extends State<MainShell> {
         actions: [
           if (session != null)
             Padding(
-              padding: const EdgeInsets.only(right: 12),
+              padding: const EdgeInsets.only(right: 14),
               child: Center(
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 11,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
-                    color: BtjColors.primarySoft,
-                    borderRadius: BorderRadius.circular(10),
+                    color: BtjColors.primaryTint,
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: BtjColors.primaryBorder),
                   ),
-                  child: Text(
-                    '${session.name} (${session.roleLabel})',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: BtjColors.primaryPressed,
-                    ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 7,
+                        height: 7,
+                        decoration: const BoxDecoration(
+                          color: BtjColors.success,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        '${session.name} (${session.roleLabel})',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: BtjColors.primaryPressed,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -121,35 +146,46 @@ class _MainShellState extends State<MainShell> {
       ),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
-          border: Border(top: BorderSide(color: BtjColors.border)),
+          color: BtjColors.surface,
+          border: Border(
+            top: BorderSide(color: BtjColors.border, width: 1),
+          ),
+          boxShadow: BtjTheme.topBarShadow,
         ),
-        child: NavigationBar(
-          selectedIndex: _selectedIndex,
-          onDestinationSelected: (index) {
-            setState(() => _selectedIndex = index);
-          },
-          destinations: const <NavigationDestination>[
-            NavigationDestination(
-              icon: Icon(Icons.point_of_sale_outlined),
-              selectedIcon: Icon(Icons.point_of_sale_rounded),
-              label: 'Kasir',
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: NavigationBar(
+              selectedIndex: _selectedIndex,
+              animationDuration: const Duration(milliseconds: 220),
+              onDestinationSelected: (index) {
+                setState(() => _selectedIndex = index);
+              },
+              destinations: const <NavigationDestination>[
+                NavigationDestination(
+                  icon: Icon(Icons.point_of_sale_outlined),
+                  selectedIcon: Icon(Icons.point_of_sale_rounded),
+                  label: 'Kasir',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.inventory_2_outlined),
+                  selectedIcon: Icon(Icons.inventory_2_rounded),
+                  label: 'Stok',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.payments_outlined),
+                  selectedIcon: Icon(Icons.payments_rounded),
+                  label: 'Kas Keluar',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.fact_check_outlined),
+                  selectedIcon: Icon(Icons.fact_check_rounded),
+                  label: 'Tutup Kasir',
+                ),
+              ],
             ),
-            NavigationDestination(
-              icon: Icon(Icons.inventory_2_outlined),
-              selectedIcon: Icon(Icons.inventory_2_rounded),
-              label: 'Stok',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.payments_outlined),
-              selectedIcon: Icon(Icons.payments_rounded),
-              label: 'Kas Keluar',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.fact_check_outlined),
-              selectedIcon: Icon(Icons.fact_check_rounded),
-              label: 'Tutup Kasir',
-            ),
-          ],
+          ),
         ),
       ),
     );

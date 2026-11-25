@@ -17,7 +17,7 @@ class LoginScreen extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 420),
               child: Column(
@@ -25,16 +25,13 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   Center(
                     child: Container(
-                      width: 108,
-                      height: 108,
+                      width: 100,
+                      height: 100,
                       padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: BtjColors.surface,
-                        borderRadius: BorderRadius.circular(22),
-                        border: Border.all(
-                          color: BtjColors.borderStrong,
-                          width: 1.4,
-                        ),
+                      decoration: BtjTheme.cardDecoration(
+                        radius: 22,
+                        borderColor: BtjColors.borderStrong,
+                        borderWidth: 1.3,
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
@@ -55,7 +52,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   const Text(
                     BtjStoreInfo.name,
                     textAlign: TextAlign.center,
@@ -63,10 +60,10 @@ class LoginScreen extends StatelessWidget {
                       fontSize: 26,
                       fontWeight: FontWeight.w800,
                       color: BtjColors.textPrimary,
-                      letterSpacing: -0.4,
+                      letterSpacing: -0.5,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +83,7 @@ class LoginScreen extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 13.5,
-                            height: 1.4,
+                            height: 1.45,
                             color: BtjColors.textSecondary,
                             fontWeight: FontWeight.w500,
                           ),
@@ -94,14 +91,10 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   Container(
                     padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: BtjColors.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: BtjColors.border, width: 1.2),
-                    ),
+                    decoration: BtjTheme.cardDecoration(radius: 18),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -111,7 +104,7 @@ class LoginScreen extends StatelessWidget {
                               child: Text(
                                 'Masuk Aplikasi Lapangan',
                                 style: TextStyle(
-                                  fontSize: 17,
+                                  fontSize: 17.5,
                                   fontWeight: FontWeight.w800,
                                   color: BtjColors.textPrimary,
                                 ),
@@ -133,23 +126,23 @@ class LoginScreen extends StatelessWidget {
                                 'Mode Demo',
                                 style: TextStyle(
                                   fontSize: 11.5,
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w800,
                                   color: BtjColors.warning,
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 8),
                         const Text(
                           'Pilih peran untuk mulai transaksi cepat. Data tersimpan lokal dan siap disambungkan ke Supabase.',
                           style: TextStyle(
                             fontSize: 13.5,
-                            height: 1.45,
+                            height: 1.48,
                             color: BtjColors.textSecondary,
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 22),
                         FilledButton.icon(
                           onPressed: store.loginDemoKasir,
                           style: FilledButton.styleFrom(
@@ -163,11 +156,12 @@ class LoginScreen extends StatelessWidget {
                           onPressed: store.loginDemoOwner,
                           style: OutlinedButton.styleFrom(
                             minimumSize: const Size(double.infinity, 56),
+                            backgroundColor: BtjColors.primaryTint,
                             side: const BorderSide(
                               color: BtjColors.primary,
                               width: 1.6,
                             ),
-                            foregroundColor: BtjColors.primary,
+                            foregroundColor: BtjColors.primaryPressed,
                           ),
                           icon: const Icon(Icons.verified_user_outlined),
                           label: const Text('Masuk Demo Owner (Lala)'),
@@ -175,14 +169,14 @@ class LoginScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 20),
                   const Text(
-                    'BTJ Mobile v1.0 (Tahap 1: Kasir Cepat)',
+                    'BTJ Mobile v1.2  |  Kasir & Operasional Lapangan',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 12,
                       color: BtjColors.textMuted,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],

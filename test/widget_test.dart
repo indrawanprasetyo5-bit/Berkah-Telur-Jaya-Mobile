@@ -19,6 +19,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Transaksi Tersimpan'), findsOneWidget);
+    expect(find.text('LUNAS'), findsOneWidget);
+    expect(find.text('Kirim WA'), findsOneWidget);
+    expect(find.text('Salin Teks'), findsOneWidget);
     expect(find.text('Cetak Struk (Bluetooth)'), findsOneWidget);
 
     await tester.tap(find.text('Transaksi Baru'));

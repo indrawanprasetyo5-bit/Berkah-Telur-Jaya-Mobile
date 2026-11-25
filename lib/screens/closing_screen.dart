@@ -7,6 +7,7 @@ import '../models/sale_transaction.dart';
 import '../services/btj_store.dart';
 import '../services/formatters.dart';
 import '../theme/btj_theme.dart';
+import '../widgets/btj_ui.dart';
 import '../widgets/thermal_receipt_dialog.dart';
 
 class ClosingScreen extends StatefulWidget {
@@ -72,7 +73,7 @@ class _ClosingScreenState extends State<ClosingScreen> {
       isScrollControlled: true,
       backgroundColor: BtjColors.background,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (_) => const _DailyPriceSheet(),
     );
@@ -120,7 +121,7 @@ class _ClosingScreenState extends State<ClosingScreen> {
                   );
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 36),
+      padding: const EdgeInsets.fromLTRB(16, 18, 16, 36),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 640),
@@ -129,17 +130,27 @@ class _ClosingScreenState extends State<ClosingScreen> {
             children: [
               if (store.isOwner) ...[
                 Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: BtjColors.primarySoft,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: BtjColors.primaryBorder,
-                      width: 1.4,
-                    ),
+                  padding: const EdgeInsets.all(18),
+                  decoration: BtjTheme.cardDecoration(
+                    color: BtjColors.primaryTint,
+                    borderColor: BtjColors.primaryBorder,
+                    borderWidth: 1.4,
                   ),
                   child: Row(
                     children: [
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: BtjColors.primarySoft,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.price_change_outlined,
+                          color: BtjColors.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
                       const Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,64 +165,75 @@ class _ClosingScreenState extends State<ClosingScreen> {
                             ),
                             SizedBox(height: 2),
                             Text(
-                              'Ubah harga modal & jual harian, langsung sinkron ke Kasir.',
+                              'Atur harga modal & jual harian langsung ke Kasir.',
                               style: TextStyle(
                                 fontSize: 12.5,
-                                color: BtjColors.textPrimary,
+                                color: BtjColors.textSecondary,
                               ),
                             ),
                           ],
                         ),
                       ),
                       const SizedBox(width: 10),
-                      FilledButton.icon(
+                      FilledButton(
                         onPressed: () => _openDailyPriceSheet(context),
                         style: FilledButton.styleFrom(
                           minimumSize: const Size(0, 48),
                           padding: const EdgeInsets.symmetric(horizontal: 14),
                         ),
-                        icon: const Icon(Icons.price_change_outlined, size: 19),
-                        label: const Text('Update Harga Harian'),
+                        child: const Text('Update Harga Harian'),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 18),
               ],
               Container(
-                padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(
-                  color: BtjColors.surface,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: BtjColors.border),
-                ),
+                padding: const EdgeInsets.all(20),
+                decoration: BtjTheme.cardDecoration(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Ringkasan Shift (${session?.name ?? '-'})',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        color: BtjColors.textPrimary,
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Ringkasan Shift (${session?.name ?? '-'})',
+                            style: const TextStyle(
+                              fontSize: 16.5,
+                              fontWeight: FontWeight.w800,
+                              color: BtjColors.textPrimary,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: BtjColors.surfaceSubtle,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            '${store.transactions.length} trx  |  ${BtjFormatters.weightKg(store.todayTotalKg)}',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: BtjColors.textPrimary,
+                              fontFeatures: BtjTheme.tabularFigures,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '${store.transactions.length} transaksi  |  ${BtjFormatters.weightKg(store.todayTotalKg)} terjual',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: BtjColors.textSecondary,
-                        fontFeatures: BtjTheme.tabularFigures,
-                      ),
-                    ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 16),
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(14),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: BtjColors.background,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(14),
                         border: Border.all(color: BtjColors.borderStrong),
                       ),
                       child: Column(
@@ -220,7 +242,7 @@ class _ClosingScreenState extends State<ClosingScreen> {
                           const Text(
                             'Uang Tunai Seharusnya di Laci',
                             style: TextStyle(
-                              fontSize: 12.5,
+                              fontSize: 13,
                               fontWeight: FontWeight.w700,
                               color: BtjColors.textSecondary,
                             ),
@@ -229,21 +251,39 @@ class _ClosingScreenState extends State<ClosingScreen> {
                           Text(
                             BtjFormatters.rupiah(expectedCash),
                             style: const TextStyle(
-                              fontSize: 26,
+                              fontSize: 28,
                               fontWeight: FontWeight.w800,
+                              letterSpacing: -0.4,
                               color: BtjColors.primary,
                               fontFeatures: BtjTheme.tabularFigures,
                             ),
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Tunai Masuk ${BtjFormatters.rupiah(store.todayCashSales)}  -  Kas Keluar ${BtjFormatters.rupiah(store.todayTotalExpenses)}',
-                            style: const TextStyle(
-                              fontSize: 12.5,
-                              fontWeight: FontWeight.w600,
-                              color: BtjColors.textSecondary,
-                              fontFeatures: BtjTheme.tabularFigures,
-                            ),
+                          const SizedBox(height: 10),
+                          const Divider(),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'Tunai Masuk: ${BtjFormatters.rupiah(store.todayCashSales)}',
+                                  style: const TextStyle(
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w700,
+                                    color: BtjColors.success,
+                                    fontFeatures: BtjTheme.tabularFigures,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                'Kas Keluar: -${BtjFormatters.rupiah(store.todayTotalExpenses)}',
+                                style: const TextStyle(
+                                  fontSize: 12.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: BtjColors.danger,
+                                  fontFeatures: BtjTheme.tabularFigures,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -254,6 +294,7 @@ class _ClosingScreenState extends State<ClosingScreen> {
                         Expanded(
                           child: _NonCashTile(
                             label: 'Total QRIS',
+                            icon: Icons.qr_code_2_rounded,
                             amount: store.todayQrisSales,
                             accent: BtjColors.info,
                           ),
@@ -262,6 +303,7 @@ class _ClosingScreenState extends State<ClosingScreen> {
                         Expanded(
                           child: _NonCashTile(
                             label: 'Total Transfer',
+                            icon: Icons.account_balance_outlined,
                             amount: store.todayTransferSales,
                             accent: BtjColors.success,
                           ),
@@ -271,26 +313,22 @@ class _ClosingScreenState extends State<ClosingScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 18),
               Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: BtjColors.surface,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: BtjColors.border),
-                ),
+                padding: const EdgeInsets.all(18),
+                decoration: BtjTheme.cardDecoration(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const Text(
                       'Hitung Uang Fisik & Simpan',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 16.5,
                         fontWeight: FontWeight.w800,
                         color: BtjColors.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 14),
                     TextField(
                       controller: _physicalCashController,
                       keyboardType: TextInputType.number,
@@ -299,8 +337,9 @@ class _ClosingScreenState extends State<ClosingScreen> {
                       ],
                       onChanged: (_) => setState(() {}),
                       style: const TextStyle(
-                        fontSize: 20,
+                        fontSize: 24,
                         fontWeight: FontWeight.w800,
+                        color: BtjColors.textPrimary,
                         fontFeatures: BtjTheme.tabularFigures,
                       ),
                       decoration: InputDecoration(
@@ -310,18 +349,23 @@ class _ClosingScreenState extends State<ClosingScreen> {
                           withPrefix: false,
                         ),
                         prefixText: 'Rp ',
+                        prefixStyle: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: BtjColors.textSecondary,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 14),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 12,
+                        horizontal: 16,
+                        vertical: 14,
                       ),
                       decoration: BoxDecoration(
                         color: diffBg,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: diffBorder),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: diffBorder, width: 1.3),
                       ),
                       child: Row(
                         children: [
@@ -331,7 +375,7 @@ class _ClosingScreenState extends State<ClosingScreen> {
                             child: Text(
                               diffLabel,
                               style: TextStyle(
-                                fontSize: 15,
+                                fontSize: 15.5,
                                 fontWeight: FontWeight.w800,
                                 color: diffFg,
                                 fontFeatures: BtjTheme.tabularFigures,
@@ -341,15 +385,16 @@ class _ClosingScreenState extends State<ClosingScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 14),
                     TextField(
                       controller: _noteController,
                       decoration: const InputDecoration(
                         labelText: 'Catatan Tutup Kasir (Opsional)',
-                        hintText: 'Contoh: setor ke brankas / selisih uang receh',
+                        hintText:
+                            'Contoh: setor ke brankas / selisih uang receh',
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 16),
                     FilledButton.icon(
                       onPressed: () => _saveClosing(store),
                       icon: const Icon(Icons.fact_check_rounded),
@@ -359,32 +404,20 @@ class _ClosingScreenState extends State<ClosingScreen> {
                 ),
               ),
               if (store.closings.isNotEmpty) ...[
-                const SizedBox(height: 20),
-                const Text(
-                  'Riwayat Tutup Kasir Sesi Ini',
-                  style: TextStyle(
-                    fontSize: 15.5,
-                    fontWeight: FontWeight.w800,
-                    color: BtjColors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 24),
+                const BtjSectionHeader(title: 'Riwayat Tutup Kasir Sesi Ini'),
+                const SizedBox(height: 12),
                 for (final record in store.closings) ...[
                   _ClosingHistoryTile(record: record),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 10),
                 ],
               ],
               if (store.transactions.isNotEmpty) ...[
-                const SizedBox(height: 20),
-                const Text(
-                  'Transaksi Terakhir (Tap untuk Cetak Ulang)',
-                  style: TextStyle(
-                    fontSize: 15.5,
-                    fontWeight: FontWeight.w800,
-                    color: BtjColors.textPrimary,
-                  ),
+                const SizedBox(height: 24),
+                const BtjSectionHeader(
+                  title: 'Transaksi Terakhir (Tap Cetak Ulang)',
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 12),
                 for (final tx in store.transactions.take(5)) ...[
                   _TransactionTile(
                     transaction: tx,
@@ -398,10 +431,10 @@ class _ClosingScreenState extends State<ClosingScreen> {
                       );
                     },
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 10),
                 ],
               ],
-              const SizedBox(height: 18),
+              const SizedBox(height: 20),
               OutlinedButton.icon(
                 onPressed: () => context.read<BtjStore>().logout(),
                 style: OutlinedButton.styleFrom(
@@ -425,41 +458,49 @@ class _ClosingScreenState extends State<ClosingScreen> {
 class _NonCashTile extends StatelessWidget {
   const _NonCashTile({
     required this.label,
+    required this.icon,
     required this.amount,
     required this.accent,
   });
 
   final String label;
+  final IconData icon;
   final int amount;
   final Color accent;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: BtjColors.background,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(13),
         border: Border.all(color: BtjColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: accent,
-            ),
+          Row(
+            children: [
+              Icon(icon, size: 16, color: accent),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w700,
+                  color: accent,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 6),
           Text(
             BtjFormatters.rupiah(amount),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
-              fontSize: 15,
+              fontSize: 17,
               fontWeight: FontWeight.w800,
               color: BtjColors.textPrimary,
               fontFeatures: BtjTheme.tabularFigures,
@@ -482,15 +523,14 @@ class _ClosingHistoryTile extends StatelessWidget {
         ? ('Pas', BtjColors.success)
         : record.difference > 0
             ? ('+${BtjFormatters.rupiah(record.difference)}', BtjColors.info)
-            : ('-${BtjFormatters.rupiah(record.difference.abs())}', BtjColors.danger);
+            : (
+                '-${BtjFormatters.rupiah(record.difference.abs())}',
+                BtjColors.danger,
+              );
 
     return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: BtjColors.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: BtjColors.border),
-      ),
+      padding: const EdgeInsets.all(16),
+      decoration: BtjTheme.cardDecoration(),
       child: Row(
         children: [
           Expanded(
@@ -500,12 +540,12 @@ class _ClosingHistoryTile extends StatelessWidget {
                 Text(
                   '${BtjFormatters.timeOnly(record.createdAt)}  |  ${record.cashierName}',
                   style: const TextStyle(
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
                     color: BtjColors.textPrimary,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 3),
                 Text(
                   'Fisik ${BtjFormatters.rupiah(record.physicalCash)}  |  Target ${BtjFormatters.rupiah(record.expectedCash)}',
                   style: const TextStyle(
@@ -531,7 +571,7 @@ class _ClosingHistoryTile extends StatelessWidget {
           Text(
             diffText,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 15,
               fontWeight: FontWeight.w800,
               color: diffColor,
               fontFeatures: BtjTheme.tabularFigures,
@@ -554,68 +594,67 @@ class _TransactionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: BtjColors.surface,
-      borderRadius: BorderRadius.circular(14),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
-        child: Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: BtjColors.border),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      decoration: BtjTheme.cardDecoration(),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        transaction.receiptNumber,
+                        style: const TextStyle(
+                          fontSize: 14.5,
+                          fontWeight: FontWeight.w800,
+                          color: BtjColors.textPrimary,
+                          fontFeatures: BtjTheme.tabularFigures,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        '${BtjFormatters.timeOnly(transaction.createdAt)}  |  ${transaction.items.length} item  |  ${transaction.paymentMethod.label}',
+                        style: const TextStyle(
+                          fontSize: 12.5,
+                          color: BtjColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      transaction.receiptNumber,
+                      BtjFormatters.rupiah(transaction.grandTotal),
                       style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 15.5,
+                        fontWeight: FontWeight.w800,
                         color: BtjColors.textPrimary,
                         fontFeatures: BtjTheme.tabularFigures,
                       ),
                     ),
-                    const SizedBox(height: 3),
-                    Text(
-                      '${BtjFormatters.timeOnly(transaction.createdAt)}  |  ${transaction.items.length} item  |  ${transaction.paymentMethod.label}',
-                      style: const TextStyle(
-                        fontSize: 12.5,
-                        color: BtjColors.textSecondary,
+                    const SizedBox(height: 2),
+                    const Text(
+                      'Lihat Struk',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: BtjColors.primary,
                       ),
                     ),
                   ],
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    BtjFormatters.rupiah(transaction.grandTotal),
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w800,
-                      color: BtjColors.textPrimary,
-                      fontFeatures: BtjTheme.tabularFigures,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  const Text(
-                    'Lihat Struk',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: BtjColors.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -699,25 +738,36 @@ class _DailyPriceSheetState extends State<_DailyPriceSheet> {
       child: Padding(
         padding: EdgeInsets.fromLTRB(
           18,
-          16,
+          12,
           18,
-          MediaQuery.of(context).viewInsets.bottom + 18,
+          MediaQuery.of(context).viewInsets.bottom + 20,
         ),
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.82,
+            maxHeight: MediaQuery.of(context).size.height * 0.84,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: BtjColors.borderStrong,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
               Row(
                 children: [
                   const Expanded(
                     child: Text(
                       'Update Harga Harian',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 18.5,
                         fontWeight: FontWeight.w800,
                         color: BtjColors.textPrimary,
                       ),
@@ -736,7 +786,7 @@ class _DailyPriceSheetState extends State<_DailyPriceSheet> {
                   color: BtjColors.textSecondary,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 14),
               Flexible(
                 child: ListView.separated(
                   shrinkWrap: true,
@@ -744,23 +794,42 @@ class _DailyPriceSheetState extends State<_DailyPriceSheet> {
                   separatorBuilder: (_, _) => const SizedBox(height: 10),
                   itemBuilder: (context, index) {
                     final product = store.products[index];
+                    final costVal =
+                        _parseInt(_costControllers[product.id]?.text ?? '');
+                    final sellVal =
+                        _parseInt(_sellControllers[product.id]?.text ?? '');
+                    final margin = sellVal - costVal;
+
                     return Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: BtjColors.surface,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: BtjColors.border),
-                      ),
+                      padding: const EdgeInsets.all(14),
+                      decoration: BtjTheme.cardDecoration(elevated: false),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            product.name,
-                            style: const TextStyle(
-                              fontSize: 14.5,
-                              fontWeight: FontWeight.w800,
-                              color: BtjColors.textPrimary,
-                            ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  product.name,
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w800,
+                                    color: BtjColors.textPrimary,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                'Margin ${BtjFormatters.rupiah(margin)}/kg',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  color: margin >= 0
+                                      ? BtjColors.success
+                                      : BtjColors.danger,
+                                  fontFeatures: BtjTheme.tabularFigures,
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 10),
                           Row(
@@ -769,9 +838,15 @@ class _DailyPriceSheetState extends State<_DailyPriceSheet> {
                                 child: TextField(
                                   controller: _costControllers[product.id],
                                   keyboardType: TextInputType.number,
+                                  onChanged: (_) => setState(() {}),
                                   inputFormatters: <TextInputFormatter>[
                                     FilteringTextInputFormatter.digitsOnly,
                                   ],
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w800,
+                                    fontFeatures: BtjTheme.tabularFigures,
+                                  ),
                                   decoration: const InputDecoration(
                                     labelText: 'Modal / kg',
                                     prefixText: 'Rp ',
@@ -784,9 +859,15 @@ class _DailyPriceSheetState extends State<_DailyPriceSheet> {
                                 child: TextField(
                                   controller: _sellControllers[product.id],
                                   keyboardType: TextInputType.number,
+                                  onChanged: (_) => setState(() {}),
                                   inputFormatters: <TextInputFormatter>[
                                     FilteringTextInputFormatter.digitsOnly,
                                   ],
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w800,
+                                    fontFeatures: BtjTheme.tabularFigures,
+                                  ),
                                   decoration: const InputDecoration(
                                     labelText: 'Jual / kg',
                                     prefixText: 'Rp ',
@@ -802,7 +883,7 @@ class _DailyPriceSheetState extends State<_DailyPriceSheet> {
                   },
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 16),
               FilledButton.icon(
                 onPressed: () => _savePrices(store),
                 icon: const Icon(Icons.save_rounded),

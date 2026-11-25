@@ -5,14 +5,16 @@ class BtjColors {
 
   static const Color background = Color(0xFFFAF7F2);
   static const Color surface = Color(0xFFFFFFFF);
+  static const Color surfaceWarm = Color(0xFFFFFDF9);
   static const Color surfaceSubtle = Color(0xFFF3EDE3);
-  static const Color border = Color(0xFFE5DBCC);
-  static const Color borderStrong = Color(0xFFCBBBA4);
+  static const Color border = Color(0xFFE6DDD0);
+  static const Color borderStrong = Color(0xFFCFC0AC);
 
   static const Color primary = Color(0xFF9A3412);
   static const Color primaryPressed = Color(0xFF7C2D12);
-  static const Color primarySoft = Color(0xFFFFEDD5);
-  static const Color primaryBorder = Color(0xFFFDBA74);
+  static const Color primarySoft = Color(0xFFFDE8D7);
+  static const Color primaryTint = Color(0xFFFEF5EE);
+  static const Color primaryBorder = Color(0xFFF6B88B);
 
   static const Color textPrimary = Color(0xFF1C1917);
   static const Color textSecondary = Color(0xFF57534E);
@@ -41,6 +43,37 @@ class BtjTheme {
   static const List<FontFeature> tabularFigures = <FontFeature>[
     FontFeature.tabularFigures(),
   ];
+
+  static const List<BoxShadow> cardShadow = <BoxShadow>[
+    BoxShadow(
+      color: Color(0x0C1C1917),
+      blurRadius: 14,
+      offset: Offset(0, 4),
+    ),
+  ];
+
+  static const List<BoxShadow> topBarShadow = <BoxShadow>[
+    BoxShadow(
+      color: Color(0x121C1917),
+      blurRadius: 18,
+      offset: Offset(0, -4),
+    ),
+  ];
+
+  static BoxDecoration cardDecoration({
+    Color color = BtjColors.surface,
+    Color borderColor = BtjColors.border,
+    double borderWidth = 1.0,
+    double radius = 16,
+    bool elevated = true,
+  }) {
+    return BoxDecoration(
+      color: color,
+      borderRadius: BorderRadius.circular(radius),
+      border: Border.all(color: borderColor, width: borderWidth),
+      boxShadow: elevated ? cardShadow : null,
+    );
+  }
 
   static ThemeData build() {
     const colorScheme = ColorScheme(
@@ -84,12 +117,13 @@ class BtjTheme {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
+        toolbarHeight: 64,
         centerTitle: false,
         titleTextStyle: TextStyle(
           color: BtjColors.textPrimary,
           fontSize: 18,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.2,
+          fontWeight: FontWeight.w800,
+          letterSpacing: -0.3,
         ),
         shape: Border(
           bottom: BorderSide(color: BtjColors.border, width: 1),
@@ -101,33 +135,51 @@ class BtjTheme {
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           side: const BorderSide(color: BtjColors.border, width: 1),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: BtjColors.surface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        fillColor: BtjColors.surfaceWarm,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 15,
+        ),
         labelStyle: const TextStyle(
           color: BtjColors.textSecondary,
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+        ),
+        floatingLabelStyle: const TextStyle(
+          color: BtjColors.primary,
+          fontWeight: FontWeight.w700,
+          fontSize: 13,
+        ),
+        hintStyle: const TextStyle(
+          color: BtjColors.textMuted,
           fontWeight: FontWeight.w500,
         ),
-        hintStyle: const TextStyle(color: BtjColors.textMuted),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: BtjColors.borderStrong, width: 1.2),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(
+            color: BtjColors.borderStrong,
+            width: 1.2,
+          ),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: BtjColors.borderStrong, width: 1.2),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(
+            color: BtjColors.borderStrong,
+            width: 1.2,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: BtjColors.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: BtjColors.danger, width: 1.5),
         ),
       ),
@@ -137,10 +189,11 @@ class BtjTheme {
           foregroundColor: Colors.white,
           disabledBackgroundColor: BtjColors.border,
           disabledForegroundColor: BtjColors.textMuted,
-          minimumSize: const Size(0, 52),
+          elevation: 0,
+          minimumSize: const Size(0, 54),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
           ),
           textStyle: const TextStyle(
             fontSize: 15,
@@ -154,13 +207,13 @@ class BtjTheme {
           foregroundColor: BtjColors.textPrimary,
           backgroundColor: BtjColors.surface,
           minimumSize: const Size(0, 52),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-          side: const BorderSide(color: BtjColors.borderStrong, width: 1.4),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+          side: const BorderSide(color: BtjColors.borderStrong, width: 1.3),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
           ),
           textStyle: const TextStyle(
-            fontSize: 15,
+            fontSize: 14.5,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -169,6 +222,9 @@ class BtjTheme {
         style: TextButton.styleFrom(
           foregroundColor: BtjColors.primary,
           minimumSize: const Size(48, 48),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           textStyle: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w700,
@@ -183,20 +239,27 @@ class BtjTheme {
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: BtjColors.surface,
         surfaceTintColor: Colors.transparent,
+        elevation: 0,
         indicatorColor: BtjColors.primarySoft,
-        height: 68,
+        indicatorShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: BtjColors.primaryBorder, width: 1),
+        ),
+        height: 72,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           final isSelected = states.contains(WidgetState.selected);
           return TextStyle(
             fontSize: 12,
-            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-            color: isSelected ? BtjColors.primary : BtjColors.textSecondary,
+            letterSpacing: -0.1,
+            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+            color: isSelected ? BtjColors.primaryPressed : BtjColors.textSecondary,
           );
         }),
         iconTheme: WidgetStateProperty.resolveWith((states) {
           final isSelected = states.contains(WidgetState.selected);
           return IconThemeData(
-            size: 24,
+            size: 23,
             color: isSelected ? BtjColors.primary : BtjColors.textSecondary,
           );
         }),
@@ -206,11 +269,11 @@ class BtjTheme {
         contentTextStyle: const TextStyle(
           color: Colors.white,
           fontSize: 14,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w600,
         ),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
         ),
       ),
     );
